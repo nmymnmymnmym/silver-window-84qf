@@ -218,6 +218,13 @@ function createFaceOverlayMaterial(faceTexture) {
         return inside.x * inside.y;
       }
 
+      vec2 rotateUv(vec2 point, float angle) {
+        float sine = sin(angle);
+        float cosine = cos(angle);
+
+        return mat2(cosine, -sine, sine, cosine) * point;
+      }
+
       void main() {
         vec3 normalDirection = normalize(vWorldNormal);
         vec3 cameraRay = normalize(vWorldPosition - cameraPosition);
@@ -240,7 +247,15 @@ function createFaceOverlayMaterial(faceTexture) {
           cos(uTime * 0.58 + projectedRay.x * 4.8)
         ) * 0.006;
 
-        vec2 faceUv = vec2(0.5, 0.5) + projectedRay * vec2(0.13, 0.19);
+        float lowerImageReach = smoothstep(0.05, 0.92, -uFacePointer.y);
+        vec2 imageCompensation = uFacePointer * vec2(0.22, 0.31);
+        imageCompensation += pointerLead * vec2(0.44, 0.52);
+        imageCompensation.y += lowerImageReach * 0.58;
+        float imageAngle = uFacePointer.x * 0.12 - uFacePointer.y * 0.06;
+        imageAngle += (uPointer.x - uFacePointer.x) * 0.08;
+        vec2 imageRay = rotateUv(projectedRay - imageCompensation, imageAngle);
+        vec2 imageReach = vec2(0.13, mix(0.19, 0.225, lowerImageReach));
+        vec2 faceUv = vec2(0.5, 0.5) + imageRay * imageReach;
         vec4 face = texture2D(uFace, faceUv);
 
         float bowlMask = 1.0 - smoothstep(-63.0, -29.0, vLocalPosition.z);
