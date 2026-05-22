@@ -1,6 +1,6 @@
 :root {
-  color-scheme: dark;
-  background: #121212;
+  color-scheme: light;
+  background: #fff;
   color: #f4f0e7;
   font-family:
     Inter, "Helvetica Neue", "Hiragino Sans", "Yu Gothic", system-ui,
@@ -28,7 +28,7 @@ body {
   position: relative;
   min-height: 100svh;
   overflow: hidden;
-  background: #171112;
+  background: #fff;
 }
 
 .photo-field,
@@ -38,20 +38,12 @@ body {
 }
 
 .photo-field {
-  background:
-    linear-gradient(135deg, rgb(17 13 15 / 72%), rgb(20 18 17 / 34%)),
-    url("../assets/face-reflection.jpg")
-      center 32% / cover;
-  filter: blur(42px) saturate(0.82) brightness(0.54);
-  scale: 1.16;
+  background: #fff;
 }
 
 .photo-field::before {
   content: "";
-  background:
-    radial-gradient(circle at 50% 46%, rgb(255 239 222 / 10%), transparent 22%),
-    radial-gradient(circle at 24% 20%, rgb(251 102 139 / 20%), transparent 31%),
-    radial-gradient(circle at 82% 78%, rgb(31 119 149 / 16%), transparent 27%);
+  background: #fff;
 }
 
 .spoon-stage {
@@ -87,6 +79,6 @@ body {
 
 @media (max-width: 640px) {
   .photo-field {
-    filter: blur(30px) saturate(0.85) brightness(0.52);
+    background: #fff;
   }
 }
