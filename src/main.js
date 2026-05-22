@@ -5,7 +5,7 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { mergeVertices } from "three/addons/utils/BufferGeometryUtils.js";
-import faceImageUrl from "../assets/face-reflection-alpha.png?url";
+import faceImageUrl from "../assets/nise.png?url";
 import spoonModelUrl from "../assets/Spoon.obj?url";
 import "./style.css";
 
@@ -254,7 +254,7 @@ function createFaceOverlayMaterial(faceTexture) {
         float imageAngle = uFacePointer.x * 0.12 - uFacePointer.y * 0.06;
         imageAngle += (uPointer.x - uFacePointer.x) * 0.08;
         vec2 imageRay = rotateUv(projectedRay - imageCompensation, imageAngle);
-        vec2 imageReach = vec2(0.13, mix(0.19, 0.225, lowerImageReach));
+        vec2 imageReach = vec2(0.13, mix(0.24, 0.275, lowerImageReach));
         vec2 faceUv = vec2(0.5, 0.5) + imageRay * imageReach;
         vec4 face = texture2D(uFace, faceUv);
 
