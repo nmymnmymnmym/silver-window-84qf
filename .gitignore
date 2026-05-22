@@ -1,0 +1,8 @@
+.DS_Store
+dist/
+node_modules/
+kitsuneri-hp-blueprint.md
+assets/__MACOSX/
+assets/Spoon.obj.zip*
+assets/close-up-portrait-*.jpg
+assets/close-up-portrait-*.png
