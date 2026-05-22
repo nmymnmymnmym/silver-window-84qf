@@ -259,9 +259,8 @@ function createFaceOverlayMaterial(faceTexture) {
         vec4 face = texture2D(uFace, faceUv);
 
         float bowlMask = 1.0 - smoothstep(-63.0, -29.0, vLocalPosition.z);
-        float handleFade = 1.0 - smoothstep(0.92, 1.42, abs(projectedRay.x));
-        float faceAlpha = smoothstep(0.02, 0.72, face.a);
-        float facePresence = bowlMask * frameMask(faceUv) * handleFade * faceAlpha;
+        float faceAlpha = smoothstep(0.01, 0.08, face.a);
+        float facePresence = bowlMask * frameMask(faceUv) * faceAlpha;
         float opacity = facePresence * mix(0.84, 1.0, frontReflection);
         float imageContrast = smoothstep(0.04, 0.92, dot(face.rgb, vec3(0.28, 0.59, 0.13)));
         vec3 reflectedFace = mix(face.rgb * vec3(0.8, 0.92, 1.08), face.rgb, imageContrast);
