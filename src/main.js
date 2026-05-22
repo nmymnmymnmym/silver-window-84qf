@@ -271,9 +271,9 @@ function renderFrame() {
   easedPointer.lerp(targetPointer, 0.06);
   facePointer.lerp(targetPointer, 0.026);
 
-  spoonAnchor.rotation.x = 0.09 + easedPointer.y * 0.18;
-  spoonAnchor.rotation.y = easedPointer.x * 0.24;
-  spoonAnchor.rotation.z = Math.sin(elapsed * 0.55) * 0.012;
+  spoonAnchor.rotation.x = 0.09 + easedPointer.y * 0.23;
+  spoonAnchor.rotation.y = easedPointer.x * 0.31;
+  spoonAnchor.rotation.z = Math.sin(elapsed * 0.55) * 0.016;
   spoonAnchor.position.y = -0.96 + Math.sin(elapsed * 0.7) * 0.018;
 
   if (spoonState.faceOverlayMaterial) {
