@@ -45,6 +45,53 @@ body {
   background: #fff;
 }
 
+:root[data-variant="black-video"] {
+  color-scheme: dark;
+  background: #000;
+  color: #fff;
+}
+
+:root[data-variant="black-video"] .prototype-shell,
+:root[data-variant="black-video"] .photo-field,
+:root[data-variant="black-video"] .photo-field::before {
+  background: #000;
+}
+
+:root[data-variant="black-video"] .site-title,
+:root[data-variant="black-video"] .nav-word,
+:root[data-variant="black-video"] .external-nav a {
+  color: #ffe642;
+}
+
+:root[data-variant="black-video"] .info-dialog {
+  border-color: #fff;
+  background: rgb(0 0 0 / 94%);
+  color: #fff;
+  box-shadow: 7px 7px 0 rgb(255 255 255 / 20%);
+}
+
+:root[data-variant="black-video"] .dialog-bar,
+:root[data-variant="black-video"] .dialog-close {
+  border-color: #fff;
+}
+
+:root[data-variant="black-video"] .social-links a,
+:root[data-variant="black-video"] .media-embed,
+:root[data-variant="black-video"] .embed-placeholder {
+  border-color: #fff;
+  color: #fff;
+}
+
+:root[data-variant="black-video"] .social-links a:hover {
+  background: #fff;
+  color: #000;
+}
+
+:root[data-variant="black-video"] .retro-field {
+  opacity: 0.18;
+  mix-blend-mode: screen;
+}
+
 .spoon-stage {
   position: absolute;
   inset: 0;
@@ -295,7 +342,8 @@ body {
 }
 
 .media-embed--spotify {
-  height: 352px;
+  height: 232px;
+  border: 0;
 }
 
 .media-embed--youtube {

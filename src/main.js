@@ -6,11 +6,34 @@ import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { mergeVertices } from "three/addons/utils/BufferGeometryUtils.js";
 import faceImageUrl from "../assets/nise.png?url";
+import faceVideoUrl from "../assets/Neri_Loop_mov1_bpm120_alpha.webm?url";
 import spoonModelUrl from "../assets/Spoon.obj?url";
 import "./style.css";
 
 const FACE_IMAGE = faceImageUrl;
+const FACE_VIDEO = faceVideoUrl;
 const SPOON_MODEL = spoonModelUrl;
+const query = new URLSearchParams(window.location.search);
+const variant = query.get("variant") || query.get("v") || "";
+const isNiseneriVariant = ["niseneri", "nise", "white"].includes(variant);
+const isVideoVariant = !isNiseneriVariant;
+const faceProjection = isVideoVariant
+  ? {
+      center: new THREE.Vector2(0.5, 0.36),
+      reach: new THREE.Vector2(0.115, 0.17),
+      lowerReach: 0.03,
+      contrast: 1.36,
+      saturation: 1.24,
+      brightness: 0.065,
+    }
+  : {
+      center: new THREE.Vector2(0.5, 0.5),
+      reach: new THREE.Vector2(0.13, 0.24),
+      lowerReach: 0.035,
+      contrast: 1.0,
+      saturation: 1.0,
+      brightness: 0.0,
+    };
 const dialogLayer = document.querySelector("[data-dialog-layer]");
 const dialogContent = {
   listen: {
@@ -151,8 +174,11 @@ window.__spoonPrototype = {
 };
 
 try {
-  const faceTexture = await loadTexture(FACE_IMAGE);
-  const faceOverlayMaterial = createFaceOverlayMaterial(faceTexture);
+  document.documentElement.dataset.variant = isVideoVariant ? "black-video" : "default";
+  const faceTexture = isVideoVariant
+    ? createVideoTexture(FACE_VIDEO)
+    : await loadTexture(FACE_IMAGE);
+  const faceOverlayMaterial = createFaceOverlayMaterial(faceTexture, faceProjection);
   const chromeMaterial = createChromeMaterial();
   const spoon = await new OBJLoader().loadAsync(SPOON_MODEL);
 
@@ -261,11 +287,17 @@ function createEnvironment() {
   return environment;
 }
 
-function createFaceOverlayMaterial(faceTexture) {
+function createFaceOverlayMaterial(faceTexture, projection) {
   return new THREE.ShaderMaterial({
     uniforms: {
       uFace: { value: faceTexture },
+      uFaceCenter: { value: projection.center },
+      uFaceContrast: { value: projection.contrast },
       uFacePointer: { value: facePointer },
+      uFaceReach: { value: projection.reach },
+      uFaceSaturation: { value: projection.saturation },
+      uFaceBrightness: { value: projection.brightness },
+      uLowerReach: { value: projection.lowerReach },
       uPointer: { value: easedPointer },
       uTime: { value: 0 },
     },
@@ -286,7 +318,13 @@ function createFaceOverlayMaterial(faceTexture) {
     `,
     fragmentShader: `
       uniform sampler2D uFace;
+      uniform vec2 uFaceCenter;
+      uniform float uFaceContrast;
       uniform vec2 uFacePointer;
+      uniform vec2 uFaceReach;
+      uniform float uFaceSaturation;
+      uniform float uFaceBrightness;
+      uniform float uLowerReach;
       uniform vec2 uPointer;
       uniform float uTime;
 
@@ -335,8 +373,8 @@ function createFaceOverlayMaterial(faceTexture) {
         float imageAngle = uFacePointer.x * 0.12 - uFacePointer.y * 0.06;
         imageAngle += (uPointer.x - uFacePointer.x) * 0.08;
         vec2 imageRay = rotateUv(projectedRay - imageCompensation, imageAngle);
-        vec2 imageReach = vec2(0.13, mix(0.24, 0.275, lowerImageReach));
-        vec2 faceUv = vec2(0.5, 0.5) + imageRay * imageReach;
+        vec2 imageReach = vec2(uFaceReach.x, mix(uFaceReach.y, uFaceReach.y + uLowerReach, lowerImageReach));
+        vec2 faceUv = uFaceCenter + imageRay * imageReach;
         vec4 face = texture2D(uFace, faceUv);
 
         float bowlMask = 1.0 - smoothstep(-63.0, -29.0, vLocalPosition.z);
@@ -347,6 +385,10 @@ function createFaceOverlayMaterial(faceTexture) {
         vec3 reflectedFace = mix(face.rgb * vec3(0.8, 0.92, 1.08), face.rgb, imageContrast);
         float faceLuma = dot(reflectedFace, vec3(0.28, 0.59, 0.13));
         reflectedFace *= mix(1.0, 0.76, smoothstep(0.56, 0.92, faceLuma));
+        float adjustedLuma = dot(reflectedFace, vec3(0.28, 0.59, 0.13));
+        reflectedFace = mix(vec3(adjustedLuma), reflectedFace, uFaceSaturation);
+        reflectedFace = (reflectedFace - 0.5) * uFaceContrast + 0.5 + uFaceBrightness;
+        reflectedFace = clamp(reflectedFace, 0.0, 1.0);
 
         gl_FragColor = vec4(reflectedFace, opacity);
       }
@@ -484,6 +526,25 @@ async function loadTexture(path) {
   const texture = await new THREE.TextureLoader().loadAsync(path);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  return texture;
+}
+
+function createVideoTexture(path) {
+  const video = document.createElement("video");
+  video.src = path;
+  video.loop = true;
+  video.muted = true;
+  video.playsInline = true;
+  video.autoplay = true;
+  video.preload = "auto";
+  video.play().catch(() => {});
+
+  const texture = new THREE.VideoTexture(video);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.generateMipmaps = false;
+
   return texture;
 }
 
