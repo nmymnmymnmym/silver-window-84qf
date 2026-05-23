@@ -7,22 +7,20 @@ import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { mergeVertices } from "three/addons/utils/BufferGeometryUtils.js";
 import spoonModelUrl from "../assets/shared/Spoon.obj?url";
-import niseEnvironmentUrl from "../assets/variants/niseneri/monochrome_studio_01_1k.exr?url";
 import faceImageUrl from "../assets/variants/niseneri/nise.png?url";
-import videoEnvironmentUrl from "../assets/variants/video/ferndale_studio_04_1k.exr?url";
+import videoEnvironmentUrl from "../assets/variants/video/ferndale_studio_04_512.exr?url";
 import faceVideoUrl from "../assets/variants/video/Neri_Loop_mov1_bpm120_alpha.webm?url";
 import "./style.css";
 
 const FACE_IMAGE = faceImageUrl;
 const FACE_VIDEO = faceVideoUrl;
-const NISE_ENVIRONMENT = niseEnvironmentUrl;
 const SPOON_MODEL = spoonModelUrl;
 const VIDEO_ENVIRONMENT = videoEnvironmentUrl;
 const query = new URLSearchParams(window.location.search);
 const variant = query.get("variant") || query.get("v") || "";
 const isNiseneriVariant = ["niseneri", "nise", "white"].includes(variant);
 const isVideoVariant = !isNiseneriVariant;
-const environmentMap = isVideoVariant ? VIDEO_ENVIRONMENT : NISE_ENVIRONMENT;
+const environmentMap = isVideoVariant ? VIDEO_ENVIRONMENT : null;
 const chromeSettings = isVideoVariant
   ? {
       color: 0xd8d2c8,
@@ -37,16 +35,16 @@ const chromeSettings = isVideoVariant
       rimLightIntensity: 0.72,
     }
   : {
-      color: 0x6f6a62,
-      emissive: 0x040403,
-      emissiveIntensity: 0.08,
-      envMapIntensity: 0.12,
-      metalness: 0.58,
-      roughness: 0.5,
-      toneMappingExposure: 0.68,
-      fillLightIntensity: 0.95,
-      keyLightIntensity: 1.28,
-      rimLightIntensity: 0.32,
+      color: 0xd8d2c8,
+      emissive: 0x2d2520,
+      emissiveIntensity: 0.65,
+      envMapIntensity: 1.08,
+      metalness: 1,
+      roughness: 0.31,
+      toneMappingExposure: 1.12,
+      fillLightIntensity: 1.95,
+      keyLightIntensity: 3.35,
+      rimLightIntensity: 0.72,
     };
 const faceProjection = isVideoVariant
   ? {
@@ -223,7 +221,9 @@ try {
     : await loadTexture(FACE_IMAGE);
   const faceOverlayMaterial = createFaceOverlayMaterial(faceTexture, faceProjection);
   const chromeMaterial = createChromeMaterial(chromeSettings);
-  scene.environment = await loadEnvironment(environmentMap);
+  scene.environment = environmentMap
+    ? await loadEnvironment(environmentMap)
+    : createRoomEnvironment();
   const spoon = await new OBJLoader().loadAsync(SPOON_MODEL);
 
   normalizeObject(spoon);
