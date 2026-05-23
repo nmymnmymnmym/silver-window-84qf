@@ -11,6 +11,51 @@ import "./style.css";
 
 const FACE_IMAGE = faceImageUrl;
 const SPOON_MODEL = spoonModelUrl;
+const dialogLayer = document.querySelector("[data-dialog-layer]");
+const dialogContent = {
+  listen: {
+    title: "Listen",
+    x: "34vw",
+    y: "24vh",
+    html: `
+      <div class="embed-stack">
+        <div class="embed-placeholder">Spotify embed</div>
+        <div class="embed-placeholder">YouTube embed</div>
+      </div>
+    `,
+  },
+  about: {
+    title: "About",
+    x: "18vw",
+    y: "50vh",
+    html: `
+      <p>キツネリ / Kitsuneri</p>
+      <p>音楽と絵とインターネットのあいだにいる。</p>
+    `,
+  },
+  log: {
+    title: "Log",
+    x: "57vw",
+    y: "23vh",
+    html: `
+      <ul>
+        <li>Release history</li>
+        <li>Works / provided songs</li>
+        <li>Notes</li>
+      </ul>
+    `,
+  },
+  event: {
+    title: "event",
+    x: "58vw",
+    y: "54vh",
+    html: `
+      <p>出演情報をここに置く。</p>
+      <p>日付、会場、チケットリンクなど。</p>
+    `,
+  },
+};
+let dialogDepth = 10;
 
 const canvas = document.querySelector("[data-spoon-stage]");
 const renderer = new THREE.WebGLRenderer({
@@ -132,6 +177,12 @@ window.addEventListener("resize", () => {
     window.innerWidth,
     window.innerHeight,
   );
+});
+
+document.querySelectorAll("[data-dialog-trigger]").forEach((trigger) => {
+  trigger.addEventListener("click", () => {
+    openInfoDialog(trigger.dataset.dialogTrigger);
+  });
 });
 
 function applySpoonMaterials(spoon, chromeMaterial, faceOverlayMaterial) {
@@ -295,6 +346,97 @@ function renderFrame() {
   }
 
   composer.render();
+}
+
+function openInfoDialog(id) {
+  if (!dialogLayer || !dialogContent[id]) {
+    return;
+  }
+
+  const existing = dialogLayer.querySelector(`[data-dialog="${id}"]`);
+  if (existing) {
+    bringDialogToFront(existing);
+    return;
+  }
+
+  const dialog = document.createElement("section");
+  const content = dialogContent[id];
+  dialog.className = "info-dialog";
+  dialog.dataset.dialog = id;
+  dialog.style.setProperty("--dialog-left", content.x);
+  dialog.style.setProperty("--dialog-top", content.y);
+  dialog.style.setProperty("--dialog-z", String(++dialogDepth));
+  dialog.setAttribute("role", "dialog");
+  dialog.setAttribute("aria-label", content.title);
+  dialog.innerHTML = `
+    <div class="dialog-bar" data-dialog-handle>
+      <h2 class="dialog-title">${content.title}</h2>
+      <button class="dialog-close" type="button" aria-label="Close ${content.title}">×</button>
+    </div>
+    <div class="dialog-body">${content.html}</div>
+  `;
+
+  dialogLayer.append(dialog);
+  clampDialogToViewport(dialog);
+  makeDialogDraggable(dialog);
+  dialog.querySelector(".dialog-close").addEventListener("click", () => {
+    dialog.remove();
+  });
+}
+
+function bringDialogToFront(dialog) {
+  dialog.style.setProperty("--dialog-z", String(++dialogDepth));
+}
+
+function makeDialogDraggable(dialog) {
+  const handle = dialog.querySelector("[data-dialog-handle]");
+  let dragOffsetX = 0;
+  let dragOffsetY = 0;
+
+  handle.addEventListener("pointerdown", (event) => {
+    if (event.target.closest("button")) {
+      return;
+    }
+
+    bringDialogToFront(dialog);
+    const bounds = dialog.getBoundingClientRect();
+    dragOffsetX = event.clientX - bounds.left;
+    dragOffsetY = event.clientY - bounds.top;
+    dialog.classList.add("is-dragging");
+    handle.setPointerCapture(event.pointerId);
+  });
+
+  handle.addEventListener("pointermove", (event) => {
+    if (!dialog.classList.contains("is-dragging")) {
+      return;
+    }
+
+    setDialogPosition(dialog, event.clientX - dragOffsetX, event.clientY - dragOffsetY);
+  });
+
+  handle.addEventListener("pointerup", (event) => {
+    dialog.classList.remove("is-dragging");
+    handle.releasePointerCapture(event.pointerId);
+  });
+}
+
+function setDialogPosition(dialog, left, top) {
+  const bounds = dialog.getBoundingClientRect();
+  const margin = 8;
+  const maxLeft = window.innerWidth - bounds.width - margin;
+  const maxTop = window.innerHeight - bounds.height - margin;
+  const nextLeft = Math.max(margin, Math.min(left, maxLeft));
+  const nextTop = Math.max(margin, Math.min(top, maxTop));
+
+  dialog.style.setProperty("--dialog-left", `${nextLeft}px`);
+  dialog.style.setProperty("--dialog-top", `${nextTop}px`);
+}
+
+function clampDialogToViewport(dialog) {
+  requestAnimationFrame(() => {
+    const bounds = dialog.getBoundingClientRect();
+    setDialogPosition(dialog, bounds.left, bounds.top);
+  });
 }
 
 function normalizeObject(object) {

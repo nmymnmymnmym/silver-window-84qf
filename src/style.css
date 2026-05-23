@@ -1,7 +1,7 @@
 :root {
   color-scheme: light;
   background: #fff;
-  color: #f4f0e7;
+  color: #050505;
   font-family:
     Inter, "Helvetica Neue", "Hiragino Sans", "Yu Gothic", system-ui,
     sans-serif;
@@ -77,8 +77,230 @@ body {
   background-size: 4px 4px;
 }
 
+.site-chrome,
+.dialog-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.site-title {
+  z-index: 3;
+  position: absolute;
+  top: clamp(24px, 3.5vw, 40px);
+  left: clamp(22px, 3.2vw, 40px);
+  display: grid;
+  gap: 0.12em;
+  margin: 0;
+  color: #050505;
+  font-family: Jost, "Helvetica Neue", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  font-size: clamp(22px, 2.35vw, 40px);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: 0;
+  pointer-events: auto;
+}
+
+.site-title span:last-child {
+  padding-left: 1.05em;
+}
+
+.scatter-nav,
+.external-nav {
+  z-index: 3;
+  position: absolute;
+  inset: 0;
+}
+
+.nav-word,
+.external-nav a,
+.dialog-close {
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #050505;
+  font: inherit;
+  letter-spacing: 0;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.nav-word {
+  position: absolute;
+  padding: 0.08em 0.16em;
+  font-family: Jost, "Helvetica Neue", system-ui, sans-serif;
+  font-size: clamp(22px, 2.35vw, 40px);
+  line-height: 1;
+  pointer-events: auto;
+  transform-origin: 50% 50%;
+}
+
+.nav-word:hover,
+.external-nav a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.11em;
+}
+
+.nav-word--listen {
+  top: 40.1%;
+  left: 18.7%;
+  rotate: -5deg;
+}
+
+.nav-word--about {
+  top: 79%;
+  left: 11.2%;
+  rotate: -34deg;
+}
+
+.nav-word--log {
+  top: 19.6%;
+  left: 74.7%;
+  rotate: -13deg;
+}
+
+.nav-word--event {
+  top: 65.3%;
+  left: 81.2%;
+  rotate: 15deg;
+}
+
+.external-nav {
+  inset: auto clamp(18px, 3.3vw, 40px) clamp(14px, 2vw, 25px) auto;
+  display: flex;
+  gap: clamp(20px, 3.2vw, 40px);
+  align-items: flex-end;
+  justify-content: flex-end;
+  pointer-events: auto;
+}
+
+.external-nav a {
+  font-family: Jost, "Helvetica Neue", system-ui, sans-serif;
+  font-size: clamp(22px, 2.35vw, 40px);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.info-dialog {
+  position: absolute;
+  top: var(--dialog-top);
+  left: var(--dialog-left);
+  z-index: var(--dialog-z, 4);
+  width: min(390px, calc(100vw - 28px));
+  border: 2px solid #050505;
+  background: rgb(255 255 255 / 96%);
+  color: #050505;
+  box-shadow: 7px 7px 0 rgb(0 0 0 / 18%);
+  font-family: Jost, "Helvetica Neue", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.dialog-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 38px;
+  border-bottom: 2px solid #050505;
+  padding: 0 0 0 12px;
+  cursor: grab;
+  user-select: none;
+}
+
+.info-dialog.is-dragging .dialog-bar {
+  cursor: grabbing;
+}
+
+.dialog-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.dialog-close {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-left: 2px solid #050505;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.dialog-body {
+  display: grid;
+  gap: 14px;
+  padding: 14px;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.dialog-body p,
+.dialog-body ul {
+  margin: 0;
+}
+
+.dialog-body ul {
+  display: grid;
+  gap: 7px;
+  padding-left: 1.2em;
+}
+
+.embed-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.embed-placeholder {
+  display: grid;
+  min-height: 86px;
+  place-items: center;
+  border: 1px solid #050505;
+  color: #050505;
+  text-align: center;
+}
+
 @media (max-width: 640px) {
   .photo-field {
     background: #fff;
+  }
+
+  .site-title {
+    font-size: 24px;
+  }
+
+  .nav-word,
+  .external-nav a {
+    font-size: 23px;
+  }
+
+  .nav-word--listen {
+    top: 32%;
+    left: 8%;
+  }
+
+  .nav-word--about {
+    top: 77%;
+    left: 7%;
+  }
+
+  .nav-word--log {
+    top: 18%;
+    left: 73%;
+  }
+
+  .nav-word--event {
+    top: 68%;
+    left: 66%;
+  }
+
+  .external-nav {
+    right: 14px;
+    bottom: 14px;
+    gap: 18px;
   }
 }

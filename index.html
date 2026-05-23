@@ -9,7 +9,36 @@
     <main class="prototype-shell">
       <div class="photo-field" aria-hidden="true"></div>
       <canvas class="spoon-stage" data-spoon-stage></canvas>
+      <section class="site-chrome" aria-label="Kitsuneri site navigation">
+        <h1 class="site-title">
+          <span>キツネリ</span>
+          <span>Kitsuneri</span>
+        </h1>
+        <nav class="scatter-nav" aria-label="Dialog navigation">
+          <button class="nav-word nav-word--listen" type="button" data-dialog-trigger="listen">
+            Listen
+          </button>
+          <button class="nav-word nav-word--about" type="button" data-dialog-trigger="about">
+            About
+          </button>
+          <button class="nav-word nav-word--log" type="button" data-dialog-trigger="log">
+            Log
+          </button>
+          <button class="nav-word nav-word--event" type="button" data-dialog-trigger="event">
+            event
+          </button>
+        </nav>
+        <nav class="external-nav" aria-label="External navigation">
+          <a href="https://cloud9pro-shop.jp/categories/kitsuneri/products" target="_blank" rel="noreferrer">
+            Merch ↗
+          </a>
+          <a href="https://cloud9pro.co.jp/contact/" target="_blank" rel="noreferrer">
+            Contact ↗
+          </a>
+        </nav>
+      </section>
       <div class="retro-field" aria-hidden="true"></div>
+      <div class="dialog-layer" aria-live="polite" data-dialog-layer></div>
     </main>
     <script type="module" src="/src/main.js"></script>
   </body>
