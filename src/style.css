@@ -86,8 +86,8 @@ body {
 }
 
 .site-title {
-  z-index: 3;
   position: absolute;
+  z-index: 3;
   top: clamp(24px, 3.5vw, 40px);
   left: clamp(22px, 3.2vw, 40px);
   display: grid;
@@ -108,8 +108,8 @@ body {
 
 .scatter-nav,
 .external-nav {
-  z-index: 3;
   position: absolute;
+  z-index: 3;
   inset: 0;
 }
 
@@ -264,43 +264,108 @@ body {
   text-align: center;
 }
 
+@media (min-width: 641px) and (max-width: 900px) {
+  .site-title {
+    top: 20px;
+    left: 20px;
+    font-size: 40px;
+  }
+
+  .nav-word {
+    font-size: 40px;
+  }
+
+  .nav-word--log,
+  .nav-word--listen,
+  .nav-word--event,
+  .nav-word--about {
+    left: auto;
+    right: 18px;
+  }
+
+  .nav-word--log {
+    top: 44px;
+    rotate: 28deg;
+  }
+
+  .nav-word--listen {
+    top: 102px;
+    rotate: 12deg;
+  }
+
+  .nav-word--event {
+    top: 156px;
+    rotate: 18deg;
+  }
+
+  .nav-word--about {
+    top: 286px;
+    rotate: -34deg;
+  }
+
+  .external-nav {
+    right: 50%;
+    bottom: 12px;
+    translate: 50% 0;
+    gap: 40px;
+  }
+
+  .external-nav a {
+    font-size: 40px;
+  }
+}
+
 @media (max-width: 640px) {
   .photo-field {
     background: #fff;
   }
 
   .site-title {
-    font-size: 24px;
+    top: 20px;
+    left: 20px;
+    font-size: clamp(30px, 10vw, 40px);
   }
 
   .nav-word,
   .external-nav a {
-    font-size: 23px;
+    font-size: clamp(30px, 10vw, 40px);
   }
 
-  .nav-word--listen {
-    top: 32%;
-    left: 8%;
-  }
-
+  .nav-word--log,
+  .nav-word--listen,
+  .nav-word--event,
   .nav-word--about {
-    top: 77%;
-    left: 7%;
+    left: auto;
+    right: 18px;
   }
 
   .nav-word--log {
-    top: 18%;
-    left: 73%;
+    top: 44px;
+    rotate: 28deg;
+  }
+
+  .nav-word--listen {
+    top: 106px;
+    rotate: 12deg;
   }
 
   .nav-word--event {
-    top: 68%;
-    left: 66%;
+    top: 160px;
+    rotate: 18deg;
+  }
+
+  .nav-word--about {
+    top: 286px;
+    rotate: -34deg;
   }
 
   .external-nav {
-    right: 14px;
-    bottom: 14px;
-    gap: 18px;
+    right: 50%;
+    bottom: 12px;
+    translate: 50% 0;
+    width: min(399px, 100vw - 2px);
+    justify-content: space-between;
+    gap: 0;
+    padding: 0 18px;
   }
 }
