@@ -26,7 +26,14 @@ const dialogContent = {
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
         ></iframe>
-        <div class="embed-placeholder">YouTube video</div>
+        <iframe
+          class="media-embed media-embed--youtube"
+          title="Kitsuneri YouTube playlist"
+          src="https://www.youtube.com/embed/I6Tkl3QuyMI?list=PL6IzV8mtdqooAIw0k5NVcoaujy4NK3wYp"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+          loading="lazy"
+        ></iframe>
       </div>
     `,
   },
@@ -37,6 +44,23 @@ const dialogContent = {
     html: `
       <p>キツネリ / Kitsuneri</p>
       <p>音楽と絵とインターネットのあいだにいる。</p>
+      <div class="social-links" aria-label="Social links">
+        <a href="https://x.com/kitsuneri_JP" target="_blank" rel="noreferrer" aria-label="X">
+          <span aria-hidden="true">X</span>
+        </a>
+        <a href="https://www.instagram.com/kitsuneri_jp/" target="_blank" rel="noreferrer" aria-label="Instagram">
+          <span aria-hidden="true">Ig</span>
+        </a>
+        <a href="https://www.youtube.com/@kitsuneri_JP" target="_blank" rel="noreferrer" aria-label="YouTube">
+          <span aria-hidden="true">Yt</span>
+        </a>
+        <a href="https://www.nicovideo.jp/user/119659669/video?ref=pc_userpage_menu" target="_blank" rel="noreferrer" aria-label="Niconico">
+          <span aria-hidden="true">Ni</span>
+        </a>
+        <a href="https://soundcloud.com/kitsuneri_jp" target="_blank" rel="noreferrer" aria-label="SoundCloud">
+          <span aria-hidden="true">Sc</span>
+        </a>
+      </div>
     `,
   },
   log: {
