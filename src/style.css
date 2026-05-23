@@ -82,6 +82,10 @@ body {
   color: #fff;
 }
 
+:root[data-variant="black-video"] .media-embed {
+  border: 0;
+}
+
 :root[data-variant="black-video"] .social-links a:hover {
   background: #fff;
   color: #000;
@@ -338,11 +342,12 @@ body {
 .media-embed {
   display: block;
   width: 100%;
-  border: 1px solid #050505;
+  border: 0;
+  background: transparent;
 }
 
 .media-embed--spotify {
-  height: 232px;
+  height: 152px;
   border: 0;
 }
 

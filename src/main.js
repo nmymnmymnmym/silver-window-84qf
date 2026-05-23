@@ -46,8 +46,10 @@ const dialogContent = {
           class="media-embed media-embed--spotify"
           title="Kitsuneri Spotify playlist"
           src="https://open.spotify.com/embed/playlist/4muOOTi0PpADqaAwGe0d5i?utm_source=generator&theme=0"
+          allowtransparency="true"
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
+          style="background: transparent;"
         ></iframe>
         <iframe
           class="media-embed media-embed--youtube"
@@ -66,7 +68,7 @@ const dialogContent = {
     y: "50vh",
     html: `
       <p>キツネリ / Kitsuneri</p>
-      <p>音楽と絵とインターネットのあいだにいる。</p>
+      <p>グミ山とN-Roachによる2人組ユニット。一途・健康・デスクトップミュージック</p>
       <div class="social-links" aria-label="Social links">
         <a href="https://x.com/kitsuneri_JP" target="_blank" rel="noreferrer" aria-label="X">
           <span aria-hidden="true">X</span>
