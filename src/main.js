@@ -1,22 +1,53 @@
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import { EXRLoader } from "three/addons/loaders/EXRLoader.js";
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { mergeVertices } from "three/addons/utils/BufferGeometryUtils.js";
-import faceImageUrl from "../assets/nise.png?url";
-import faceVideoUrl from "../assets/Neri_Loop_mov1_bpm120_alpha.webm?url";
-import spoonModelUrl from "../assets/Spoon.obj?url";
+import spoonModelUrl from "../assets/shared/Spoon.obj?url";
+import niseEnvironmentUrl from "../assets/variants/niseneri/monochrome_studio_01_1k.exr?url";
+import faceImageUrl from "../assets/variants/niseneri/nise.png?url";
+import videoEnvironmentUrl from "../assets/variants/video/ferndale_studio_04_1k.exr?url";
+import faceVideoUrl from "../assets/variants/video/Neri_Loop_mov1_bpm120_alpha.webm?url";
 import "./style.css";
 
 const FACE_IMAGE = faceImageUrl;
 const FACE_VIDEO = faceVideoUrl;
+const NISE_ENVIRONMENT = niseEnvironmentUrl;
 const SPOON_MODEL = spoonModelUrl;
+const VIDEO_ENVIRONMENT = videoEnvironmentUrl;
 const query = new URLSearchParams(window.location.search);
 const variant = query.get("variant") || query.get("v") || "";
 const isNiseneriVariant = ["niseneri", "nise", "white"].includes(variant);
 const isVideoVariant = !isNiseneriVariant;
+const environmentMap = isVideoVariant ? VIDEO_ENVIRONMENT : NISE_ENVIRONMENT;
+const chromeSettings = isVideoVariant
+  ? {
+      color: 0xd8d2c8,
+      emissive: 0x2d2520,
+      emissiveIntensity: 0.65,
+      envMapIntensity: 1.08,
+      metalness: 1,
+      roughness: 0.31,
+      toneMappingExposure: 1.12,
+      fillLightIntensity: 1.95,
+      keyLightIntensity: 3.35,
+      rimLightIntensity: 0.72,
+    }
+  : {
+      color: 0x6f6a62,
+      emissive: 0x040403,
+      emissiveIntensity: 0.08,
+      envMapIntensity: 0.12,
+      metalness: 0.58,
+      roughness: 0.5,
+      toneMappingExposure: 0.68,
+      fillLightIntensity: 0.95,
+      keyLightIntensity: 1.28,
+      rimLightIntensity: 0.32,
+    };
 const faceProjection = isVideoVariant
   ? {
       center: new THREE.Vector2(0.5, 0.36),
@@ -124,7 +155,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.12;
+renderer.toneMappingExposure = chromeSettings.toneMappingExposure;
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -155,16 +186,26 @@ const spoonState = {
 };
 
 scene.add(spoonAnchor);
-scene.environment = createEnvironment();
+scene.environment = createRoomEnvironment();
 
-const fillLight = new THREE.HemisphereLight(0xffeadb, 0x140f15, 1.95);
+const fillLight = new THREE.HemisphereLight(
+  0xffeadb,
+  0x140f15,
+  chromeSettings.fillLightIntensity,
+);
 scene.add(fillLight);
 
-const keyLight = new THREE.DirectionalLight(0xffd9bd, 3.35);
+const keyLight = new THREE.DirectionalLight(
+  0xffd9bd,
+  chromeSettings.keyLightIntensity,
+);
 keyLight.position.set(-2.7, 2.6, 4.6);
 scene.add(keyLight);
 
-const rimLight = new THREE.DirectionalLight(0x9ddcff, 0.72);
+const rimLight = new THREE.DirectionalLight(
+  0x9ddcff,
+  chromeSettings.rimLightIntensity,
+);
 rimLight.position.set(3.2, -1.5, 3.1);
 scene.add(rimLight);
 
@@ -181,7 +222,8 @@ try {
     ? createVideoTexture(FACE_VIDEO)
     : await loadTexture(FACE_IMAGE);
   const faceOverlayMaterial = createFaceOverlayMaterial(faceTexture, faceProjection);
-  const chromeMaterial = createChromeMaterial();
+  const chromeMaterial = createChromeMaterial(chromeSettings);
+  scene.environment = await loadEnvironment(environmentMap);
   const spoon = await new OBJLoader().loadAsync(SPOON_MODEL);
 
   normalizeObject(spoon);
@@ -269,23 +311,35 @@ function applySpoonMaterials(spoon, chromeMaterial, faceOverlayMaterial) {
   overlays.forEach(([mesh, overlay]) => mesh.add(overlay));
 }
 
-function createChromeMaterial() {
+function createChromeMaterial(settings) {
   return new THREE.MeshPhysicalMaterial({
-    color: 0xd8d2c8,
-    emissive: 0x2d2520,
-    emissiveIntensity: 0.65,
-    envMapIntensity: 1.08,
-    metalness: 1,
-    roughness: 0.31,
+    color: settings.color,
+    emissive: settings.emissive,
+    emissiveIntensity: settings.emissiveIntensity,
+    envMapIntensity: settings.envMapIntensity,
+    metalness: settings.metalness,
+    roughness: settings.roughness,
     clearcoat: 0.72,
     clearcoatRoughness: 0.28,
   });
 }
 
-function createEnvironment() {
+function createRoomEnvironment() {
   const pmrem = new THREE.PMREMGenerator(renderer);
   const environment = pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
   pmrem.dispose();
+  return environment;
+}
+
+async function loadEnvironment(path) {
+  const texture = await new EXRLoader().loadAsync(path);
+  texture.mapping = THREE.EquirectangularReflectionMapping;
+
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const environment = pmrem.fromEquirectangular(texture).texture;
+  texture.dispose();
+  pmrem.dispose();
+
   return environment;
 }
 

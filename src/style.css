@@ -106,6 +106,12 @@ body {
   touch-action: none;
 }
 
+:root[data-variant="default"] .spoon-stage {
+  filter:
+    drop-shadow(0 0 1px rgb(0 0 0 / 32%))
+    drop-shadow(0 14px 22px rgb(0 0 0 / 9%));
+}
+
 .retro-field {
   position: absolute;
   inset: 0;
