@@ -168,19 +168,28 @@ body {
 }
 
 .external-nav {
-  inset: auto clamp(18px, 3.3vw, 40px) clamp(14px, 2vw, 25px) auto;
+  inset: auto 16px 16px auto;
   display: flex;
-  gap: clamp(20px, 3.2vw, 40px);
+  gap: 24px;
   align-items: flex-end;
   justify-content: flex-end;
   pointer-events: auto;
 }
 
 .external-nav a {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
   font-family: Jost, "Noto Sans JP", system-ui, sans-serif;
-  font-size: clamp(22px, 2.35vw, 40px);
+  font-size: 24px;
   line-height: 1;
   white-space: nowrap;
+}
+
+.external-nav svg {
+  width: 1em;
+  height: 1em;
+  fill: currentcolor;
 }
 
 .info-dialog {
@@ -303,14 +312,10 @@ body {
   }
 
   .external-nav {
-    right: 50%;
+    right: 16px;
     bottom: 12px;
-    translate: 50% 0;
-    gap: 40px;
-  }
-
-  .external-nav a {
-    font-size: 40px;
+    translate: 0;
+    gap: 24px;
   }
 }
 
@@ -325,8 +330,7 @@ body {
     font-size: clamp(30px, 10vw, 40px);
   }
 
-  .nav-word,
-  .external-nav a {
+  .nav-word {
     font-size: clamp(30px, 10vw, 40px);
   }
 
@@ -359,12 +363,12 @@ body {
   }
 
   .external-nav {
-    right: 50%;
-    bottom: 12px;
-    translate: 50% 0;
-    width: min(399px, 100vw - 2px);
-    justify-content: space-between;
-    gap: 0;
-    padding: 0 18px;
+    right: 16px;
+    bottom: 16px;
+    translate: 0;
+    width: auto;
+    justify-content: flex-end;
+    gap: 24px;
+    padding: 0;
   }
 }
