@@ -19,8 +19,14 @@ const dialogContent = {
     y: "24vh",
     html: `
       <div class="embed-stack">
-        <div class="embed-placeholder">Spotify embed</div>
-        <div class="embed-placeholder">YouTube embed</div>
+        <iframe
+          class="media-embed media-embed--spotify"
+          title="Kitsuneri Spotify playlist"
+          src="https://open.spotify.com/embed/playlist/4muOOTi0PpADqaAwGe0d5i?utm_source=generator&theme=0"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+        ></iframe>
+        <div class="embed-placeholder">YouTube video</div>
       </div>
     `,
   },
@@ -355,7 +361,7 @@ function openInfoDialog(id) {
 
   const existing = dialogLayer.querySelector(`[data-dialog="${id}"]`);
   if (existing) {
-    bringDialogToFront(existing);
+    existing.remove();
     return;
   }
 

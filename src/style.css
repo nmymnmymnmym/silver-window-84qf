@@ -263,6 +263,16 @@ body {
   gap: 10px;
 }
 
+.media-embed {
+  display: block;
+  width: 100%;
+  border: 1px solid #050505;
+}
+
+.media-embed--spotify {
+  height: 352px;
+}
+
 .embed-placeholder {
   display: grid;
   min-height: 86px;
