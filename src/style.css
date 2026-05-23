@@ -75,6 +75,10 @@ body {
   border-color: #fff;
 }
 
+:root[data-variant="black-video"] .dialog-close {
+  color: #fff;
+}
+
 :root[data-variant="black-video"] .social-links a,
 :root[data-variant="black-video"] .media-embed,
 :root[data-variant="black-video"] .embed-placeholder {
@@ -337,11 +341,13 @@ body {
 .embed-stack {
   display: grid;
   gap: 10px;
+  overflow: hidden;
 }
 
 .media-embed {
   display: block;
-  width: 100%;
+  width: calc(100% - 16px);
+  margin: 0 auto;
   border: 0;
   background: transparent;
 }
@@ -349,6 +355,10 @@ body {
 .media-embed--spotify {
   height: 152px;
   border: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #1f1f1f;
+  clip-path: inset(0 round 14px);
 }
 
 .media-embed--youtube {

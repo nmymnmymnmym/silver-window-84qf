@@ -64,6 +64,8 @@ const faceProjection = isVideoVariant
       brightness: 0.0,
     };
 const dialogLayer = document.querySelector("[data-dialog-layer]");
+const FRAME_RATE = 24;
+const FRAME_DURATION = 1 / FRAME_RATE;
 const dialogContent = {
   listen: {
     title: "Listen",
@@ -460,9 +462,9 @@ function createFaceOverlayMaterial(faceTexture, projection) {
 }
 
 function renderFrame() {
-  const elapsed = clock.getElapsedTime();
-  easedPointer.lerp(targetPointer, 0.06);
-  facePointer.lerp(targetPointer, 0.026);
+  const elapsed = Math.floor(clock.getElapsedTime() / FRAME_DURATION) * FRAME_DURATION;
+  easedPointer.lerp(targetPointer, 0.13);
+  facePointer.lerp(targetPointer, 0.055);
 
   spoonAnchor.rotation.x = 0.09 + easedPointer.y * 0.23;
   spoonAnchor.rotation.y = easedPointer.x * 0.31;
